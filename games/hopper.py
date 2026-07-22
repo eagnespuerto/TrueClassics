@@ -4,27 +4,29 @@ import random
 from .palette import BLACK, WHITE, GREEN, LIME, RED, YELLOW, BLUE, BROWN, GRAY
 
 
-CELL = 32
+ROWS = 15
+HEADER = 40  # pixels reserved at the top for the score
 
 
 def run(screen, clock):
     w, h = screen.get_size()
     font = pygame.font.SysFont("monospace", 20, bold=True)
-    cols = w // CELL
-    rows = 15
-    ox = (w - cols * CELL) // 2
-    oy = (h - rows * CELL) // 2
-    px, py = cols // 2, rows - 1
+    cell = max(16, min(32, (h - HEADER) // ROWS))
+    cols = w // cell
+    board_w = cols * cell
+    ox = (w - board_w) // 2
+    oy = HEADER + (h - HEADER - ROWS * cell) // 2
+    px, py = cols // 2, ROWS - 1
     cars = []
     logs = []
     for row in range(9, 13):
         speed = random.choice([-1, 1]) * random.randint(2, 4)
         for i in range(3):
-            cars.append([row, i * (cols * CELL // 3), speed])
+            cars.append([row, i * (board_w // 3), speed])
     for row in range(3, 7):
         speed = random.choice([-1, 1]) * random.randint(1, 3)
         for i in range(2):
-            logs.append([row, i * (cols * CELL // 2), speed, 3 * CELL])
+            logs.append([row, i * (board_w // 2), speed, 3 * cell])
     score = 0
     while True:
         for e in pygame.event.get():
@@ -35,56 +37,57 @@ def run(screen, clock):
                     return
                 if e.key == pygame.K_LEFT and px > 0:
                     px -= 1
-                if e.key == pygame.K_RIGHT and px < cols - 1:
+                elif e.key == pygame.K_RIGHT and px < cols - 1:
                     px += 1
-                if e.key == pygame.K_UP:
+                elif e.key == pygame.K_UP and py > 0:
                     py -= 1
                     score += 10
-                if e.key == pygame.K_DOWN and py < rows - 1:
+                elif e.key == pygame.K_DOWN and py < ROWS - 1:
                     py += 1
         for c in cars:
-            c[1] = (c[1] + c[2]) % (cols * CELL)
+            c[1] = (c[1] + c[2]) % board_w
         for lg in logs:
-            lg[1] = (lg[1] + lg[2]) % (cols * CELL)
-        player_px = px * CELL
-        player_py = py * CELL
+            lg[1] = (lg[1] + lg[2]) % board_w
+        player_px = px * cell
         for row, x, spd in cars:
-            if row == py and x <= player_px < x + CELL:
+            if row == py and x <= player_px < x + cell:
                 return
         on_log = False
         for row, x, spd, length in logs:
-            if row == py:
-                if x <= player_px < x + length or (x + length > cols * CELL and player_px < (x + length) % (cols * CELL)):
-                    on_log = True
-                    px = int(((player_px + spd) % (cols * CELL)) // CELL)
-                    break
+            if row != py:
+                continue
+            end = x + length
+            if x <= player_px < end or (end > board_w and player_px < end % board_w):
+                on_log = True
+                px = int(((player_px + spd) % board_w) // cell)
+                break
         if 3 <= py <= 6 and not on_log:
-            return
-        if py < 0:
             return
         if py == 0:
             score += 100
-            py = rows - 1
+            py = ROWS - 1
         screen.fill(BLACK)
-        for y in range(rows):
-            rect = (ox, oy + y * CELL, cols * CELL, CELL)
+        for y in range(ROWS):
+            rect = (ox, oy + y * cell, board_w, cell)
             if y == 0:
                 pygame.draw.rect(screen, GREEN, rect)
             elif 3 <= y <= 6:
                 pygame.draw.rect(screen, BLUE, rect)
-            elif y == 7 or y == 8:
+            elif y in (7, 8):
                 pygame.draw.rect(screen, LIME, rect)
             elif 9 <= y <= 12:
                 pygame.draw.rect(screen, GRAY, rect)
             else:
                 pygame.draw.rect(screen, LIME, rect)
         for row, x, spd, length in logs:
-            pygame.draw.rect(screen, BROWN, (ox + x, oy + row * CELL + 4, length, CELL - 8))
-            if x + length > cols * CELL:
-                pygame.draw.rect(screen, BROWN, (ox, oy + row * CELL + 4, (x + length) % (cols * CELL), CELL - 8))
+            pygame.draw.rect(screen, BROWN, (ox + x, oy + row * cell + 4, length, cell - 8))
+            if x + length > board_w:
+                pygame.draw.rect(screen, BROWN, (ox, oy + row * cell + 4, (x + length) % board_w, cell - 8))
         for row, x, spd in cars:
-            pygame.draw.rect(screen, RED if spd > 0 else YELLOW, (ox + x, oy + row * CELL + 4, CELL - 4, CELL - 8))
-        pygame.draw.rect(screen, LIME, (ox + px * CELL + 4, oy + py * CELL + 4, CELL - 8, CELL - 8))
-        screen.blit(font.render(f"Score {score}", 1, WHITE), (10, 10))
+            pygame.draw.rect(screen, RED if spd > 0 else YELLOW,
+                             (ox + x, oy + row * cell + 4, cell - 4, cell - 8))
+        pygame.draw.rect(screen, LIME,
+                         (ox + px * cell + 4, oy + py * cell + 4, cell - 8, cell - 8))
+        screen.blit(font.render(f"Score {score}", True, WHITE), (10, 10))
         pygame.display.flip()
         clock.tick(30)

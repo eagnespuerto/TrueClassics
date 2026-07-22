@@ -4,8 +4,6 @@ import random
 from .palette import BLACK, WHITE, YELLOW, RED, PINK, CYAN, ORANGE, BLUE
 
 
-CELL = 18
-
 MAZE = [
     "############################",
     "#............##............#",
@@ -37,8 +35,11 @@ def run(screen, clock):
     font = pygame.font.SysFont("monospace", 20, bold=True)
     grid = [list(row) for row in MAZE]
     rows, cols = len(grid), len(grid[0])
+    # Adaptive cell size: fit the maze in the screen with a 40 px header
+    # for the score, and 10 px of horizontal margin.
+    CELL = max(8, min((h - 50) // rows, (w - 20) // cols))
     ox = (w - cols * CELL) // 2
-    oy = (h - rows * CELL) // 2 + 20
+    oy = 40 + (h - 40 - rows * CELL) // 2
     px, py = 13, 15
     dx, dy = 0, 0
     ghosts = [(13, 9, RED), (14, 9, PINK), (13, 10, CYAN), (14, 10, ORANGE)]

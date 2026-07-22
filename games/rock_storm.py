@@ -11,8 +11,13 @@ def run(screen, clock):
     ship = [w / 2, h / 2, 0.0, 0.0, 0.0]  # x, y, vx, vy, angle
     bullets = []
     rocks = []
+    safe_dist = 120  # keep initial rocks clear of the ship spawn
     for _ in range(5):
-        rocks.append([random.uniform(0, w), random.uniform(0, h),
+        while True:
+            rx, ry = random.uniform(0, w), random.uniform(0, h)
+            if (rx - ship[0]) ** 2 + (ry - ship[1]) ** 2 >= safe_dist ** 2:
+                break
+        rocks.append([rx, ry,
                       random.uniform(-2, 2), random.uniform(-2, 2), 30])
     score = 0
     cooldown = 0

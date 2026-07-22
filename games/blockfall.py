@@ -4,7 +4,6 @@ import random
 from .palette import BLACK, WHITE, GRAY, CYAN, YELLOW, PURPLE, GREEN, RED, BLUE, ORANGE
 
 
-CELL = 24
 COLS, ROWS = 10, 20
 
 SHAPES = [
@@ -53,8 +52,10 @@ def clear_rows(grid):
 def run(screen, clock):
     w, h = screen.get_size()
     font = pygame.font.SysFont("monospace", 20, bold=True)
+    # Adaptive cell size: leave a 40 px header for the score.
+    CELL = max(8, min((h - 50) // ROWS, (w - 40) // (COLS + 6)))
     ox_board = (w - COLS * CELL) // 2
-    oy_board = (h - ROWS * CELL) // 2
+    oy_board = 40 + (h - 40 - ROWS * CELL) // 2
     grid = [[0] * COLS for _ in range(ROWS)]
     shape, color = random.choice(SHAPES)
     shape = [row[:] for row in shape]

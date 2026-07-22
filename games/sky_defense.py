@@ -77,7 +77,8 @@ def run(screen, clock):
             pygame.draw.rect(screen, CYAN, c)
         pygame.draw.polygon(screen, GREEN, [(bases[0][0] - 20, h - 20), (bases[0][0] + 20, h - 20), (bases[0][0], h - 40)])
         for m in incoming:
-            pygame.draw.line(screen, RED, (m[4] - m[2] * 20, m[5] - m[3] * 20) if False else (m[0] - m[2] * 5, m[1] - m[3] * 5), (m[0], m[1]), 2)
+            trail_start = (m[0] - m[2] * 5, m[1] - m[3] * 5)
+            pygame.draw.line(screen, RED, trail_start, (m[0], m[1]), 2)
         for m in outgoing:
             pygame.draw.line(screen, YELLOW, (bases[0][0], bases[0][1]), (m[0], m[1]), 1)
             pygame.draw.circle(screen, WHITE, (int(m[0]), int(m[1])), 2)

@@ -1,6 +1,7 @@
 """Alien Assault - shoot invaders. Arrows to move, Space to fire, Esc quits."""
 import pygame
-from .palette import BLACK, WHITE, GREEN, RED, YELLOW, CYAN
+import random
+from .palette import BLACK, WHITE, GREEN, YELLOW, CYAN
 
 
 def run(screen, clock):
@@ -52,7 +53,6 @@ def run(screen, clock):
         efire += 1
         if efire >= 45 and aliens:
             efire = 0
-            import random
             shooter = random.choice(aliens)
             ebullets.append(pygame.Rect(shooter.centerx - 2, shooter.bottom, 4, 10))
         for b in ebullets:

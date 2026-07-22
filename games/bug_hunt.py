@@ -15,6 +15,7 @@ def run(screen, clock):
     bullets = []
     bug = [[x, 0] for x in range(10)]
     bug_dir = 1
+    bug_tick = 0
     score = 0
     cooldown = 0
     while True:
@@ -41,7 +42,9 @@ def run(screen, clock):
         for b in bullets:
             b.y -= 10
         bullets = [b for b in bullets if b.bottom > 0]
-        if pygame.time.get_ticks() % 4 == 0:
+        bug_tick += 1
+        if bug_tick >= 8:
+            bug_tick = 0
             for seg in bug:
                 seg[0] += bug_dir
             if bug and (bug[-1][0] >= cols - 1 or bug[0][0] <= 0):

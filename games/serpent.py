@@ -36,10 +36,14 @@ def run(screen, clock):
             tick = 0
             hx, hy = snake[0]
             nx, ny = (hx + dx) % cols, (hy + dy) % rows
-            if (nx, ny) in snake:
+            eating = (nx, ny) == apple
+            # Tail vacates unless we're eating, so exclude it from the
+            # self-collision check when it will be popped this tick.
+            body = snake if eating else snake[:-1]
+            if (nx, ny) in body:
                 return
             snake.insert(0, (nx, ny))
-            if (nx, ny) == apple:
+            if eating:
                 score += 1
                 while True:
                     apple = (random.randrange(cols), random.randrange(rows))
