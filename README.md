@@ -60,7 +60,7 @@ Inside any game, `Esc` returns to the launcher.
 | Game | Controls |
 |------|----------|
 | Paddle Duel   | Left paddle `W`/`S`, right paddle `↑`/`↓` |
-| Brick Buster  | `←` `→` to move paddle |
+| Brick Buster  | `←` `→` move paddle, `Space` launches the ball (3 lives) |
 | Blockfall     | `←` `→` move, `↑` rotate, `↓` soft-drop |
 | Serpent       | Arrow keys to steer |
 | Alien Assault | `←` `→` move, `Space` fire |

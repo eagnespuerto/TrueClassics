@@ -44,7 +44,7 @@ COL_SIZE = 5
 
 CONTROLS = [
     ("Paddle Duel",   "W / S = left paddle    Up / Down = right paddle"),
-    ("Brick Buster",  "Left / Right = move paddle"),
+    ("Brick Buster",  "Left / Right move paddle    Space launch ball"),
     ("Blockfall",     "Left / Right move    Up rotate    Down soft-drop"),
     ("Serpent",       "Arrow keys to steer"),
     ("Alien Assault", "Left / Right move    Space fire"),
