@@ -1,5 +1,6 @@
 """Paddle Duel - two-paddle bouncing ball. W/S left, Up/Down right. Esc quits."""
 import pygame
+from . import back
 from .palette import BLACK, WHITE, CYAN, RED
 
 
@@ -16,6 +17,8 @@ def run(screen, clock):
             if e.type == pygame.QUIT:
                 return "quit"
             if e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE:
+                return
+            if back.clicked(e, screen):
                 return
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w] and left.top > 0:
@@ -50,5 +53,6 @@ def run(screen, clock):
             pygame.draw.rect(screen, WHITE, (w // 2 - 1, y, 2, 10))
         screen.blit(font.render(f"{ls}", 1, WHITE), (w // 4, 10))
         screen.blit(font.render(f"{rs}", 1, WHITE), (3 * w // 4, 10))
+        back.draw(screen)
         pygame.display.flip()
         clock.tick(60)

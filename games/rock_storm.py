@@ -2,6 +2,7 @@
 import pygame
 import math
 import random
+from . import back
 from .palette import BLACK, WHITE, GRAY, YELLOW
 
 
@@ -25,6 +26,8 @@ def run(screen, clock):
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 return "quit"
+            if back.clicked(e, screen):
+                return
             if e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_ESCAPE:
                     return
@@ -86,5 +89,6 @@ def run(screen, clock):
         for r in rocks:
             pygame.draw.circle(screen, GRAY, (int(r[0]), int(r[1])), int(r[4]), 2)
         screen.blit(font.render(f"Score {score}", 1, WHITE), (10, 10))
+        back.draw(screen)
         pygame.display.flip()
         clock.tick(60)

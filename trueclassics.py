@@ -21,10 +21,14 @@ from games import (
     bug_hunt,
     sky_defense,
 )
+from games import back as back_button
 from games.palette import BLACK, WHITE, YELLOW, CYAN, GRAY
 
 
-WIN_W, WIN_H = 800, 480
+# Client area sized so the whole surface stays on-screen inside an
+# 800x480 physical display after the PiOS panel (~26 px) and the window
+# manager's title bar (~28 px) take their cut.
+WIN_W, WIN_H = 800, 400
 
 GAMES = [
     ("Paddle Duel",   paddle_duel),
@@ -84,18 +88,31 @@ def move_selection(sel, key):
     return sel
 
 
+def _menu_hitboxes(w, top, row_h, help_y, help_h):
+    """Return the click hitboxes for menu items and the Help entry."""
+    col_w = w // 2
+    boxes = []
+    for i in range(len(GAMES)):
+        col, row = i // COL_SIZE, i % COL_SIZE
+        x = col * col_w
+        y = top + row * row_h
+        boxes.append((i, pygame.Rect(x, y, col_w, row_h)))
+    boxes.append((HELP_INDEX, pygame.Rect(0, help_y - 4, w, help_h + 8)))
+    return boxes
+
+
 def draw_menu(screen, title_font, item_font, small_font, selected):
     w, h = screen.get_size()
     screen.fill(BLACK)
     title = title_font.render("TRUECLASSICS", True, YELLOW)
-    screen.blit(title, ((w - title.get_width()) // 2, 15))
+    screen.blit(title, ((w - title.get_width()) // 2, 10))
     sub = small_font.render("10 classic arcade games in 16-bit color", True, CYAN)
-    screen.blit(sub, ((w - sub.get_width()) // 2, 60))
+    screen.blit(sub, ((w - sub.get_width()) // 2, 52))
 
     col_w = w // 2
     col_x = [col_w // 2, col_w + col_w // 2]
-    top = 100
-    row_h = 34
+    top = 85
+    row_h = 30
     for i, (name, _) in enumerate(GAMES):
         col, row = i // COL_SIZE, i % COL_SIZE
         color = YELLOW if i == selected else WHITE
@@ -105,16 +122,17 @@ def draw_menu(screen, title_font, item_font, small_font, selected):
         y = top + row * row_h
         screen.blit(surf, (x, y))
 
-    help_y = top + COL_SIZE * row_h + 10
+    help_y = top + COL_SIZE * row_h + 8
     color = YELLOW if selected == HELP_INDEX else CYAN
     prefix = "> " if selected == HELP_INDEX else "  "
     hs = item_font.render(f"{prefix}Help / Controls", True, color)
     screen.blit(hs, ((w - hs.get_width()) // 2, help_y))
 
     footer = small_font.render(
-        "Arrows: select   Enter: play   Esc: quit", True, GRAY)
-    screen.blit(footer, ((w - footer.get_width()) // 2, h - 25))
+        "Arrows / click: select   Enter: play   Esc: quit", True, GRAY)
+    screen.blit(footer, ((w - footer.get_width()) // 2, h - 22))
     pygame.display.flip()
+    return _menu_hitboxes(w, top, row_h, help_y, hs.get_height())
 
 
 def show_help(screen, clock, title_font, item_font, small_font):
@@ -126,23 +144,26 @@ def show_help(screen, clock, title_font, item_font, small_font):
             if e.type == pygame.KEYDOWN and e.key in (
                     pygame.K_ESCAPE, pygame.K_RETURN, pygame.K_SPACE, pygame.K_BACKSPACE):
                 return
+            if back_button.clicked(e, screen):
+                return
         screen.fill(BLACK)
         title = title_font.render("HELP  -  CONTROLS", True, YELLOW)
-        screen.blit(title, ((w - title.get_width()) // 2, 15))
+        screen.blit(title, ((w - title.get_width()) // 2, 8))
         launcher = small_font.render(
-            "Launcher: Arrows select, Enter play, Esc quit.  In any game, Esc returns here.",
+            "Launcher: Arrows select, Enter play, Esc quit.  In any game, Esc or Back returns here.",
             True, CYAN)
-        screen.blit(launcher, ((w - launcher.get_width()) // 2, 60))
-        top = 95
-        row_h = 32
+        screen.blit(launcher, ((w - launcher.get_width()) // 2, 52))
+        top = 78
+        row_h = 24
         for i, (name, ctrl) in enumerate(CONTROLS):
             name_surf = small_font.render(name, True, YELLOW)
             ctrl_surf = small_font.render(ctrl, True, WHITE)
             y = top + i * row_h
-            screen.blit(name_surf, (40, y))
-            screen.blit(ctrl_surf, (200, y))
-        back = small_font.render("Press Esc or Enter to return", True, GRAY)
-        screen.blit(back, ((w - back.get_width()) // 2, h - 25))
+            screen.blit(name_surf, (30, y))
+            screen.blit(ctrl_surf, (180, y))
+        hint = small_font.render("Press Esc, Enter, or tap Back to return", True, GRAY)
+        screen.blit(hint, ((w - hint.get_width()) // 2, h - 22))
+        back_button.draw(screen)
         pygame.display.flip()
         clock.tick(30)
 
@@ -156,7 +177,9 @@ def main():
     item_font = pygame.font.SysFont("monospace", 22, bold=True)
     small_font = pygame.font.SysFont("monospace", 14)
     selected = 0
+    hitboxes = []
     while True:
+        launch = None
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 pygame.quit()
@@ -168,14 +191,22 @@ def main():
                 if e.key in (pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT):
                     selected = move_selection(selected, e.key)
                 if e.key in (pygame.K_RETURN, pygame.K_SPACE):
-                    if selected == HELP_INDEX:
-                        result = show_help(screen, clock, title_font, item_font, small_font)
-                    else:
-                        result = GAMES[selected][1].run(screen, clock)
-                    if result == "quit":
-                        pygame.quit()
-                        sys.exit(0)
-        draw_menu(screen, title_font, item_font, small_font, selected)
+                    launch = selected
+            if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
+                for idx, box in hitboxes:
+                    if box.collidepoint(e.pos):
+                        selected = idx
+                        launch = idx
+                        break
+        if launch is not None:
+            if launch == HELP_INDEX:
+                result = show_help(screen, clock, title_font, item_font, small_font)
+            else:
+                result = GAMES[launch][1].run(screen, clock)
+            if result == "quit":
+                pygame.quit()
+                sys.exit(0)
+        hitboxes = draw_menu(screen, title_font, item_font, small_font, selected)
         clock.tick(30)
 
 

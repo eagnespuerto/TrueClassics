@@ -4,6 +4,7 @@ Ball starts glued to the paddle so the player can position first. Three lives:
 each miss re-attaches the ball; running out of lives ends the round.
 """
 import pygame
+from . import back
 from .palette import BLACK, WHITE, GRAY, RED, ORANGE, YELLOW, GREEN, CYAN, BLUE
 
 
@@ -42,6 +43,8 @@ def run(screen, clock):
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 return "quit"
+            if back.clicked(e, screen):
+                return
             if e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_ESCAPE:
                     return
@@ -101,5 +104,6 @@ def run(screen, clock):
             screen.blit(msg, ((w - msg.get_width()) // 2, h // 2))
             hint = font.render("Left / Right to move paddle", True, GRAY)
             screen.blit(hint, ((w - hint.get_width()) // 2, h // 2 + 30))
+        back.draw(screen)
         pygame.display.flip()
         clock.tick(60)

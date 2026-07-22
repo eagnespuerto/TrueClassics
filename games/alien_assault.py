@@ -1,6 +1,7 @@
 """Alien Assault - shoot invaders. Arrows to move, Space to fire, Esc quits."""
 import pygame
 import random
+from . import back
 from .palette import BLACK, WHITE, GREEN, YELLOW, CYAN
 
 
@@ -22,6 +23,8 @@ def run(screen, clock):
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 return "quit"
+            if back.clicked(e, screen):
+                return
             if e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_ESCAPE:
                     return
@@ -82,5 +85,6 @@ def run(screen, clock):
         for a in aliens:
             pygame.draw.rect(screen, GREEN, a)
         screen.blit(font.render(f"Score {score}", 1, WHITE), (10, 10))
+        back.draw(screen)
         pygame.display.flip()
         clock.tick(60)

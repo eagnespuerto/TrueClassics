@@ -1,6 +1,7 @@
 """Hopper - cross the road and river. Arrows to move, Esc quits."""
 import pygame
 import random
+from . import back
 from .palette import BLACK, WHITE, GREEN, LIME, RED, YELLOW, BLUE, BROWN, GRAY
 
 
@@ -32,6 +33,8 @@ def run(screen, clock):
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 return "quit"
+            if back.clicked(e, screen):
+                return
             if e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_ESCAPE:
                     return
@@ -89,5 +92,6 @@ def run(screen, clock):
         pygame.draw.rect(screen, LIME,
                          (ox + px * cell + 4, oy + py * cell + 4, cell - 8, cell - 8))
         screen.blit(font.render(f"Score {score}", True, WHITE), (10, 10))
+        back.draw(screen)
         pygame.display.flip()
         clock.tick(30)

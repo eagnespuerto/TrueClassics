@@ -2,6 +2,7 @@
 
 **Category:** Games
 **Platform:** Raspberry Pi OS (PiOS) / any Linux, macOS, or Windows with Python 3
+**Window size:** 800×400 client area, sized so the whole surface stays on-screen inside an 800×480 physical display after the PiOS panel and the window's title bar take their share.
 **Storage footprint:** ~40 KB of code, no bundled art — everything drawn at runtime in a **16-color RGB565-safe palette** (16-bit colors) to keep the app tiny.
 
 A launcher plus **10 original takes on classic arcade games**. Names are original to avoid trademark trouble, but the gameplay will feel familiar.
@@ -54,8 +55,8 @@ update-desktop-database ~/.local/share/applications 2>/dev/null || true
 
 ## Controls
 
-**Launcher:** `↑` / `↓` to select, `Enter` or `Space` to play, `Esc` to quit.
-Inside any game, `Esc` returns to the launcher.
+**Launcher:** arrow keys or mouse/touch to select, `Enter` / `Space` / click to launch, `Esc` to quit.
+Inside any game, `Esc` **or** tapping the on-screen **&lt; Back** chip (top-right corner) returns to the launcher.
 
 | Game | Controls |
 |------|----------|

@@ -2,6 +2,7 @@
 import pygame
 import random
 import math
+from . import back
 from .palette import BLACK, WHITE, GREEN, RED, YELLOW, CYAN, BROWN
 
 
@@ -22,7 +23,9 @@ def run(screen, clock):
                 return "quit"
             if e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE:
                 return
-            if e.type == pygame.MOUSEBUTTONDOWN:
+            if back.clicked(e, screen):
+                return
+            if e.type == pygame.MOUSEBUTTONDOWN and not back.rect(screen).collidepoint(e.pos):
                 tx, ty = e.pos
                 bx, by = bases[0]
                 dx, dy = tx - bx, ty - by
@@ -85,5 +88,6 @@ def run(screen, clock):
         for ex in explosions:
             pygame.draw.circle(screen, YELLOW, (int(ex[0]), int(ex[1])), int(ex[2]), 2)
         screen.blit(font.render(f"Score {score}   Cities {len(cities)}", 1, WHITE), (10, 10))
+        back.draw(screen)
         pygame.display.flip()
         clock.tick(60)

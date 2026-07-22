@@ -1,5 +1,6 @@
 """Bug Hunt - shoot the segmented bug as it snakes down. Arrows to move, Space fire, Esc quits."""
 import pygame
+from . import back
 from .palette import BLACK, WHITE, GREEN, RED, YELLOW, ORANGE
 
 
@@ -22,6 +23,8 @@ def run(screen, clock):
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 return "quit"
+            if back.clicked(e, screen):
+                return
             if e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_ESCAPE:
                     return
@@ -80,5 +83,6 @@ def run(screen, clock):
             color = RED if i == 0 else (ORANGE if i % 2 else GREEN)
             pygame.draw.rect(screen, color, (seg[0] * CELL, seg[1] * CELL, CELL - 1, CELL - 1))
         screen.blit(font.render(f"Score {score}", 1, WHITE), (10, 10))
+        back.draw(screen)
         pygame.display.flip()
         clock.tick(60)

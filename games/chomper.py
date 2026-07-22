@@ -1,6 +1,7 @@
 """Chomper - eat dots in a maze, avoid ghosts. Arrows to move, Esc quits."""
 import pygame
 import random
+from . import back
 from .palette import BLACK, WHITE, YELLOW, RED, PINK, CYAN, ORANGE, BLUE
 
 
@@ -50,6 +51,8 @@ def run(screen, clock):
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 return "quit"
+            if back.clicked(e, screen):
+                return
             if e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_ESCAPE:
                     return
@@ -107,5 +110,6 @@ def run(screen, clock):
         for gx, gy, c in ghosts:
             pygame.draw.rect(screen, c, (ox + gx * CELL + 2, oy + gy * CELL + 2, CELL - 4, CELL - 4))
         screen.blit(font.render(f"Score {score}", 1, WHITE), (10, 10))
+        back.draw(screen)
         pygame.display.flip()
         clock.tick(60)

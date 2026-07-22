@@ -1,6 +1,7 @@
 """Blockfall - falling tetromino puzzle. Left/Right move, Up rotate, Down soft-drop, Esc quits."""
 import pygame
 import random
+from . import back
 from .palette import BLACK, WHITE, GRAY, CYAN, YELLOW, PURPLE, GREEN, RED, BLUE, ORANGE
 
 
@@ -67,6 +68,8 @@ def run(screen, clock):
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 return "quit"
+            if back.clicked(e, screen):
+                return
             if e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_ESCAPE:
                     return
@@ -105,5 +108,6 @@ def run(screen, clock):
                 if v:
                     pygame.draw.rect(screen, color, (ox_board + (px + x) * CELL, oy_board + (py + y) * CELL, CELL - 1, CELL - 1))
         screen.blit(font.render(f"Score {score}", 1, WHITE), (10, 10))
+        back.draw(screen)
         pygame.display.flip()
         clock.tick(60)
