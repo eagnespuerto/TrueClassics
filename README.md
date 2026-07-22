@@ -42,12 +42,15 @@ python3 trueclassics.py
 
 ### Add to the PiOS Games menu
 
+`./install.sh` already does this — it writes a `trueclassics.desktop` entry into `~/.local/share/applications/` with the absolute path filled in, so **Menu → Games → TrueClassics** just works.
+
+To install the menu entry by hand instead, edit the shipped [`trueclassics.desktop`](trueclassics.desktop), replace `__INSTALL_DIR__` with the absolute path to your clone (e.g. `/home/pi/TrueClassics`), then:
+
 ```bash
 mkdir -p ~/.local/share/applications
 cp trueclassics.desktop ~/.local/share/applications/
+update-desktop-database ~/.local/share/applications 2>/dev/null || true
 ```
-
-TrueClassics will now show up under **Menu → Games → TrueClassics**.
 
 ## Controls
 

@@ -3,7 +3,11 @@ Version=1.0
 Type=Application
 Name=TrueClassics
 Comment=10 classic-style arcade games in 16-bit color
-Exec=python3 %h/TrueClassics/trueclassics.py
+# Replace __INSTALL_DIR__ with the absolute path to your TrueClassics folder,
+# e.g. /home/pi/TrueClassics. The install.sh script does this automatically.
+Exec=sh -c 'cd "__INSTALL_DIR__" && python3 trueclassics.py'
+Path=__INSTALL_DIR__
 Icon=applications-games
 Terminal=false
 Categories=Game;ArcadeGame;
+StartupNotify=false
