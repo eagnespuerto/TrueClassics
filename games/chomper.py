@@ -4,7 +4,7 @@ import random
 from .palette import BLACK, WHITE, YELLOW, RED, PINK, CYAN, ORANGE, BLUE
 
 
-CELL = 24
+CELL = 18
 
 MAZE = [
     "############################",
