@@ -1,5 +1,12 @@
 # TrueClassics
 
+[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![release](https://img.shields.io/github/v/release/eagnespuerto/TrueClassics?include_prereleases&sort=semver)](https://github.com/eagnespuerto/TrueClassics/releases/latest)
+[![made with](https://img.shields.io/badge/made%20with-Python-3776AB?logo=python&logoColor=white)](https://github.com/eagnespuerto/TrueClassics)
+[![platform](https://img.shields.io/badge/platform-Raspberry%20Pi-A22846?logo=raspberrypi&logoColor=white)](https://github.com/eagnespuerto/TrueClassics#readme)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-support%20me-FF5E5B?logo=kofi&logoColor=white)](https://ko-fi.com/eagnespuerto)
+[![Linktree](https://img.shields.io/badge/Linktree-soitsagnes-43E55E?logo=linktree&logoColor=white)](https://linktr.ee/soitsagnes)
+
 **Category:** Games
 **Platform:** Raspberry Pi OS (PiOS) / any Linux, macOS, or Windows with Python 3
 **Window size:** 800×400 client area, sized so the whole surface stays on-screen inside an 800×480 physical display after the PiOS panel and the window's title bar take their share.
